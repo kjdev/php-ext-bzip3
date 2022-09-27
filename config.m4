@@ -68,12 +68,7 @@ if test "$PHP_BZIP3" != "no"; then
     AC_DEFINE_UNQUOTED(LIBBZIP3_VERSION, "$LIBBZIP3_VERSON", [ ])
 
     BZIP3_SOURCES="
-      lib/src/cm.c
-      lib/src/crc32.c
       lib/src/libbz3.c
-      lib/src/libsais.c
-      lib/src/lzp.c
-      lib/src/rle.c
     "
 
     PHP_ADD_INCLUDE(PHP_EXT_SRCDIR()/lib/include)
