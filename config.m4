@@ -63,13 +63,21 @@ if test "$PHP_BZIP3" != "no"; then
     ])
   else
     dnl build-in library
-    LIBBZIP3_VERSON=1.1.3
+    LIBBZIP3_VERSON=1.1.8
     AC_MSG_RESULT(use build-in version $LIBBZIP3_VERSON)
     AC_DEFINE_UNQUOTED(LIBBZIP3_VERSION, "$LIBBZIP3_VERSON", [ ])
 
     BZIP3_SOURCES="
       lib/src/libbz3.c
     "
+
+    dnl fixed version
+    if test -z "$SED"; then
+      LIBBZIP3_SED="sed";
+    else
+      LIBBZIP3_SED="$SED";
+    fi
+    $LIBBZIP3_SED -i "s/VERSION/\"$LIBBZIP3_VERSON\"/" lib/src/libbz3.c
 
     PHP_ADD_INCLUDE(PHP_EXT_SRCDIR()/lib/include)
   fi
