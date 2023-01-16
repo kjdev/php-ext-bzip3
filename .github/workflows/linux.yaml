@@ -42,7 +42,7 @@ jobs:
         if: ${{ ! matrix.library }}
       - name: Install dependency library
         run: |
-          apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing bzip3-libs bzip3-dev
+          apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/community bzip3-libs bzip3-dev
         if: ${{ matrix.library }}
 
       - name: Build
