@@ -63,7 +63,7 @@ if test "$PHP_BZIP3" != "no"; then
     ])
   else
     dnl build-in library
-    LIBBZIP3_VERSON=1.2.2
+    LIBBZIP3_VERSON=1.2.3
     AC_MSG_RESULT(use build-in version $LIBBZIP3_VERSON)
     AC_DEFINE_UNQUOTED(LIBBZIP3_VERSION, "$LIBBZIP3_VERSON", [ ])
 
