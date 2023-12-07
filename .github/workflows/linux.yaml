@@ -13,8 +13,6 @@ jobs:
           - '8.2-zts'
           - '8.1'
           - '8.1-zts'
-          - '8.0'
-          - '8.0-zts'
         library:
           - ''
           - 'system'
