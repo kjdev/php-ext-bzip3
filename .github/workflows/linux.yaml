@@ -19,8 +19,12 @@ jobs:
           - '8.1-zts'
         library:
           - ''
-          - 'system'
+          - 'edge'
         image: [php]
+        include:
+          - php: '8.4'
+            image: php
+            library: 'system'
 
     if: contains(github.event.head_commit.message, 'ci skip') == false
 
@@ -45,7 +49,11 @@ jobs:
       - name: Install dependency library
         run: |
           apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/community bzip3-libs bzip3-dev
-        if: ${{ matrix.library }}
+        if: ${{ matrix.library == 'edge' }}
+      - name: Install dependency library
+        run: |
+          apk add --no-cache bzip3-libs bzip3-dev
+        if: ${{ matrix.library == 'system' }}
 
       - name: Build
         run: |
