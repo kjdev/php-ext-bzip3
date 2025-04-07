@@ -36,7 +36,7 @@ var_dump(Bzip3\uncompress(substr($data, 0, 13)));
 var_dump(Bzip3\uncompress(substr($data, 0, -1)));
 
 // failed to decode a block
-var_dump(Bzip3\uncompress(substr($data, 0, -2) . "xx"));
+var_dump(Bzip3\uncompress(substr($data, 0, -4) . "xxxx"));
 
 // OK
 var_dump(Bzip3\uncompress($data));
