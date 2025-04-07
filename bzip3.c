@@ -129,7 +129,7 @@ ZEND_END_ARG_INFO()
 ZEND_FUNCTION(bzip3_uncompress)
 {
   char *data;
-  size_t data_offset = 0, data_size;
+  size_t data_offset = 0, data_size, buffer_size;
   uint8_t byteswap_buf[4], *decode_buf;
   uint32_t block_size;
   int32_t decode_size, read_size;
@@ -164,7 +164,8 @@ ZEND_FUNCTION(bzip3_uncompress)
     RETURN_FALSE;
   }
 
-  decode_buf = (uint8_t *)emalloc(block_size + block_size / 50 + 32);
+  buffer_size = block_size + block_size / 50 + 32;
+  decode_buf = (uint8_t *)emalloc(buffer_size);
   if (!decode_buf) {
     zend_error(E_WARNING, "failed to allocate memory");
     bz3_free(state);
@@ -199,7 +200,11 @@ ZEND_FUNCTION(bzip3_uncompress)
     memcpy(decode_buf, data + data_offset, read_size);
     data_offset += read_size;
 
-    if (bz3_decode_block(state, decode_buf, read_size, decode_size) == -1) {
+    if (bz3_decode_block(state, decode_buf,
+#ifdef HAVE_BZIP3_DECODE_BLOCK_NEW
+                         buffer_size,
+#endif
+                         read_size, decode_size) == -1) {
       zend_error(E_WARNING,
                  "failed to decode a block: %s", bz3_strerror(state));
       bz3_free(state);
