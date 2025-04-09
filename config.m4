@@ -58,7 +58,7 @@ if test "$PHP_BZIP3" != "no"; then
     else
       LIBBZIP3_SED="$SED";
     fi
-    $LIBBZIP3_SED -i "s/VERSION/\"$LIBBZIP3_VERSON\"/" lib/src/libbz3.c
+    $LIBBZIP3_SED -i "s/VERSION/\"$LIBBZIP3_VERSON\"/" PHP_EXT_SRCDIR()/lib/src/libbz3.c
 
     PHP_ADD_INCLUDE(PHP_EXT_SRCDIR()/lib/include)
   fi
@@ -74,6 +74,10 @@ if test "$PHP_BZIP3" != "no"; then
     AC_DEFINE(HAVE_BZIP3_DECODE_BLOCK_NEW,1,[ ])
   fi
 
-  PHP_NEW_EXTENSION(bzip3, bzip3.c $BZIP3_SOURCES, $ext_shared)
+  PHP_NEW_EXTENSION(bzip3, bzip3.c $BZIP3_SOURCES, $ext_shared,, [-DZEND_ENABLE_STATIC_TSRMLS_CACHE=1])
   PHP_SUBST(BZIP3_SHARED_LIBADD)
+
+  if test "$PHP_LIBBZIP3" = "no"; then
+    PHP_ADD_BUILD_DIR($ext_builddir/lib/src)
+  fi
 fi
