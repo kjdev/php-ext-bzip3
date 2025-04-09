@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.10.13" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>bzip3</name>
+ <channel>pecl.php.net</channel>
+ <summary>BZip3 extension</summary>
+ <description>A compression/decompression with BZip3</description>
+ <lead>
+  <name>Tatsuya KAMIJO</name>
+  <user>kjdev</user>
+  <email>kjdev@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>${DATE}</date>
+ <version>
+  <release>${VERSION}</release>
+  <api>${VERSION}</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license>MIT</license>
+ <notes>
+${NOTES}
+ </notes>
+ <contents>
+  <dir name="/">
+   <file name="README.md" role="doc" />
+   <file name="bzip3.c" role="src" />
+   <file name="config.m4" role="src" />
+   <file name="php_bzip3.h" role="src" />
+   <file name="lib/LICENSE" role="doc" />
+   <file name="lib/src/libbz3.c" role="src" />
+   <file name="lib/include/common.h" role="src" />
+   <file name="lib/include/libbz3.h" role="src" />
+   <file name="lib/include/libsais.h" role="src" />
+   <file name="lib/include/yarg.h" role="src" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>8.1</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+ <providesextension>bzip3</providesextension>
+ <extsrcrelease />
+</package>
