@@ -45,7 +45,7 @@ if test "$PHP_BZIP3" != "no"; then
     PHP_EVAL_INCLINE($LIBBZIP3_CFLAGS)
   else
     dnl build-in library
-    LIBBZIP3_VERSON=1.5.1
+    LIBBZIP3_VERSON=1.5.2
     AC_MSG_RESULT(use build-in version $LIBBZIP3_VERSON)
 
     BZIP3_SOURCES="
