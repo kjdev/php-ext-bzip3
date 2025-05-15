@@ -2,7 +2,7 @@
 #ifndef PHP_BZIP3_H
 #define PHP_BZIP3_H
 
-#define PHP_BZIP3_EXT_VERSION "0.1.0"
+#define PHP_BZIP3_EXT_VERSION "0.1.1"
 #define PHP_BZIP3_NS "Bzip3"
 
 extern zend_module_entry bzip3_module_entry;
