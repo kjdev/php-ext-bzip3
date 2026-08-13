@@ -12,6 +12,6 @@ bzip3
 
 Bzip3 support => enabled
 Extension Version => %d.%d.%d
-Library Version => %s
+Library Version => %d.%d.%d
 
 %a
