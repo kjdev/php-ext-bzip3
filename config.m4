@@ -58,7 +58,7 @@ if test "$PHP_BZIP3" != "no"; then
     else
       LIBBZIP3_SED="$SED";
     fi
-    $LIBBZIP3_SED -i "s/VERSION/\"$LIBBZIP3_VERSON\"/" PHP_EXT_SRCDIR()/lib/src/libbz3.c
+    $LIBBZIP3_SED -i -e "s/VERSION/\"$LIBBZIP3_VERSON\"/" PHP_EXT_SRCDIR()/lib/src/libbz3.c
 
     PHP_ADD_INCLUDE(PHP_EXT_SRCDIR()/lib/include)
   fi
