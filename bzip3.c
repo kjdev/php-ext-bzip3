@@ -53,6 +53,13 @@ ZEND_FUNCTION(bzip3_compress)
     RETURN_THROWS();
   }
 
+  /* MiB() overflows the uint32_t for large values, and 4097 would wrap to 1. */
+  if (block_size_mib < 1 || block_size_mib > 511) {
+    zend_argument_value_error(2,
+                              "block size must be between 65 KiB and 511 MiB");
+    RETURN_THROWS();
+  }
+
   block_size = MiB(block_size_mib);
   if (block_size < KiB(65) || block_size > MiB(511)) {
     zend_argument_value_error(2,
