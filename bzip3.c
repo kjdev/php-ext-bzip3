@@ -190,7 +190,12 @@ ZEND_FUNCTION(bzip3_uncompress)
     decode_size = read_int32(data + data_offset);
     data_offset += 4;
 
-    if (data_offset + read_size > data_size) {
+    /* Both sizes come from the input: they can be negative or larger than the
+       buffer the header sized, and they are used as memcpy() lengths. */
+    if (read_size < 0 || decode_size < 0
+        || (size_t) read_size > buffer_size
+        || (size_t) decode_size > buffer_size
+        || (size_t) read_size > data_size - data_offset) {
       zend_error(E_WARNING, "invalid data error");
       bz3_free(state);
       efree(decode_buf);
