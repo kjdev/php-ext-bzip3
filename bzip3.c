@@ -165,13 +165,29 @@ ZEND_FUNCTION(bzip3_uncompress)
     RETURN_THROWS();
   }
 
+  buffer_size = block_size + block_size / 50 + 32;
+
+#ifdef HAVE_BZIP3_DECODE_BLOCK_NEW
+  /* bz3_new() allocates with malloc(), which memory_limit does not see, so
+     the header-controlled block_size must be checked against it beforehand. */
+  if (PG(memory_limit) > 0) {
+    size_t used = zend_memory_usage(0);
+    size_t limit = (size_t) PG(memory_limit);
+    size_t needed = bz3_min_memory_needed((int32_t) block_size) + buffer_size;
+    if (used > limit || needed > limit - used) {
+      zend_error(E_WARNING,
+                 "block size in the header exceeds the memory limit");
+      RETURN_FALSE;
+    }
+  }
+#endif
+
   state = bz3_new(block_size);
   if (state == NULL) {
     zend_error(E_WARNING, "failed to create a block decoder state");
     RETURN_FALSE;
   }
 
-  buffer_size = block_size + block_size / 50 + 32;
   decode_buf = (uint8_t *)emalloc(buffer_size);
   if (!decode_buf) {
     zend_error(E_WARNING, "failed to allocate memory");
@@ -197,7 +213,12 @@ ZEND_FUNCTION(bzip3_uncompress)
     decode_size = read_int32(data + data_offset);
     data_offset += 4;
 
-    if (data_offset + read_size > data_size) {
+    /* Both sizes come from the input: they can be negative or larger than the
+       buffer the header sized, and they are used as memcpy() lengths. */
+    if (read_size < 0 || decode_size < 0
+        || (size_t) read_size > buffer_size
+        || (size_t) decode_size > buffer_size
+        || (size_t) read_size > data_size - data_offset) {
       zend_error(E_WARNING, "invalid data error");
       bz3_free(state);
       efree(decode_buf);
