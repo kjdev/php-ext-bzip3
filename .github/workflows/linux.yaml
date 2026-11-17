@@ -1,61 +1,58 @@
 name: Linux
 
-on: [push]
+on:
+  push:
 
 jobs:
   ci:
+    permissions:
+      contents: read
+
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         php:
           - '8.5'
-          - '8.5-zts'
           - '8.4'
-          - '8.4-zts'
           - '8.3'
-          - '8.3-zts'
           - '8.2'
-          - '8.2-zts'
           - '8.1'
-          - '8.1-zts'
+        ts:
+          - nts
+          - zts
         library:
           - ''
-          - 'edge'
-        image: [php]
-        include:
-          - php: '8.4'
-            image: php
-            library: 'system'
+          - 'system'
 
     if: contains(github.event.head_commit.message, 'ci skip') == false
 
-    container:
-      image: ${{ matrix.image }}:${{ matrix.php }}-alpine
-
     steps:
-      - name: Prepare required command
-        run: |
-          apk upgrade --no-cache
-          apk add --no-cache autoconf gcc git libtool make musl-dev
-
-      - name: adding github workspace as safe directory
-        run: git config --global --add safe.directory $GITHUB_WORKSPACE
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          set-safe-directory: true
+          submodules: ${{ ! matrix.library }}
+          token: ${{ github.token }}
 
-      - name: Checkout submodules
-        run: |
-          git submodule update --init --recursive
-        if: ${{ ! matrix.library }}
+      - name: Setup PHP (${{ matrix.php }} ${{ matrix.ts }})
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # 2.37.1
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: xml, mbstring
+          coverage: none
+          ini-values: zend.assertions=1
+        env:
+          phpts: ${{ matrix.ts }}
+
       - name: Install dependency library
         run: |
-          apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/community bzip3-libs bzip3-dev
-        if: ${{ matrix.library == 'edge' }}
-      - name: Install dependency library
-        run: |
-          apk add --no-cache bzip3-libs bzip3-dev
-        if: ${{ matrix.library == 'system' }}
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libbzip3-dev
+        if: ${{ matrix.library }}
 
       - name: Build
         run: |
