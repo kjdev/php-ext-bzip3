@@ -273,6 +273,14 @@ ZEND_MINFO_FUNCTION(bzip3)
   php_info_print_table_end();
 }
 
+ZEND_MINIT_FUNCTION(bzip3)
+{
+#if defined(COMPILE_DL_BZIP3) && defined(ZTS)
+  ZEND_TSRMLS_CACHE_UPDATE();
+#endif
+  return SUCCESS;
+}
+
 static zend_function_entry bzip3_functions[] = {
   ZEND_NS_FALIAS(PHP_BZIP3_NS, compress,
                  bzip3_compress, arginfo_bzip3_compress)
@@ -285,7 +293,7 @@ zend_module_entry bzip3_module_entry = {
   STANDARD_MODULE_HEADER,
   "bzip3",
   bzip3_functions,
-  NULL,
+  ZEND_MINIT(bzip3),
   NULL,
   NULL,
   NULL,
@@ -295,5 +303,8 @@ zend_module_entry bzip3_module_entry = {
 };
 
 #ifdef COMPILE_DL_BZIP3
+#  ifdef ZTS
+ZEND_TSRMLS_CACHE_DEFINE()
+#  endif
 ZEND_GET_MODULE(bzip3)
 #endif
