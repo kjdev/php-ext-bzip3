@@ -167,20 +167,23 @@ ZEND_FUNCTION(bzip3_uncompress)
 
   buffer_size = block_size + block_size / 50 + 32;
 
-#ifdef HAVE_BZIP3_DECODE_BLOCK_NEW
   /* bz3_new() allocates with malloc(), which memory_limit does not see, so
-     the header-controlled block_size must be checked against it beforehand. */
+     the header-controlled block_size must be checked against it beforehand.
+     bz3_min_memory_needed() is unavailable in old libbzip3, where only the
+     emalloc() part (buffer_size) can be checked. */
   if (PG(memory_limit) > 0) {
     size_t used = zend_memory_usage(0);
     size_t limit = (size_t) PG(memory_limit);
-    size_t needed = bz3_min_memory_needed((int32_t) block_size) + buffer_size;
+    size_t needed = buffer_size;
+#ifdef HAVE_BZIP3_DECODE_BLOCK_NEW
+    needed += bz3_min_memory_needed((int32_t) block_size);
+#endif
     if (used > limit || needed > limit - used) {
       zend_error(E_WARNING,
                  "block size in the header exceeds the memory limit");
       RETURN_FALSE;
     }
   }
-#endif
 
   state = bz3_new(block_size);
   if (state == NULL) {
